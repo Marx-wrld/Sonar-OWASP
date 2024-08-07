@@ -1,7 +1,6 @@
 # Sonar-OWASP
 Sonar &amp; OWASP security integration with github CI/CD 
 
-1: SONARQUBE
 Step 1. Install PostgreSQL
 Install PostgreSQL on your server or use a managed PostgreSQL service.
 Create a database and user for SonarQube.
