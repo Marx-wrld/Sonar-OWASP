@@ -2,8 +2,8 @@
 Sonar &amp; OWASP security integration with github CI/CD 
 
 Step 1. Install PostgreSQL
-Install PostgreSQL on your server or use a managed PostgreSQL service.
-Create a database and user for SonarQube.
+- Install PostgreSQL on your server or use a managed PostgreSQL service.
+- Create a database and user for SonarQube.
 ```
 sudo -u postgres psql
 CREATE DATABASE sonarqube;
@@ -12,7 +12,7 @@ GRANT ALL PRIVILEGES ON DATABASE sonarqube TO sonar;
 \q
 ```
 Step 2. Set Up SonarQube
-Using Docker-compose
+- Using Docker-compose
 ```
 version: '3.8'
 
@@ -46,7 +46,7 @@ volumes:
 docker-compose up -d
 ```
 Step 3. Configure GitHub CI/CD
-In your GitHub repository, create a .github/workflows/sonarqube.yml file:
+- In your GitHub repository, create a .github/workflows/sonarqube.yml file:
 ```
 name: Sonar code analysis & quality
 
