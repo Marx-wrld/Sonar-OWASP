@@ -77,7 +77,7 @@ jobs:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 ```
 Step 4. Access SonarQube
-Open your browser and go to http://<your_server_ip>:9000.
-Log in with default credentials (admin / admin), and change the password after your first login.
+- Open your browser and go to http://<your_server_ip>:9000.
+- Log in with default credentials (admin / admin), and change the password after your first login.
 Step 5. Trigger a CI/CD Build
-Push changes to your GitHub repository. This should trigger the GitHub Actions workflow and perform a SonarQube analysis.
+- Push changes to your GitHub repository. This should trigger the GitHub Actions workflow and perform a SonarQube analysis.
