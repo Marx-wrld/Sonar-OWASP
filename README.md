@@ -138,6 +138,7 @@ while true; do
   sleep 86400
 done
 ```
-Make executable - chmod +x clean-logs.sh
+Make executable
 ```
-
+chmod +x clean-logs.sh
+```
