@@ -25,7 +25,7 @@ services:
       POSTGRES_PASSWORD: velocityadmin
       POSTGRES_DB: sonarqube
     ports:
-      - "5433:5432"  # Host port:Container port
+      - "5433:5432"
     volumes:
       - sonarqube_postgres_data:/var/lib/postgresql/data
     networks:
@@ -44,27 +44,19 @@ services:
     ports:
       - "9000:9000"
     environment:
-      # Database Configuration
       SONAR_JDBC_URL: jdbc:postgresql://sonarqube_postgres:5432/sonarqube
       SONAR_JDBC_USERNAME: sonaruser
       SONAR_JDBC_PASSWORD: velocityadmin
-
-      # Elasticsearch Memory Configuration
       ES_JAVA_OPTS: "-Xms1g -Xmx1g"
-
-      # SonarQube Memory Configuration
       SONARQUBE_JAVA_OPTS: "-Xms1g -Xmx2g"
-
     ulimits:
       nofile:
         soft: 65536
         hard: 65536
-
     volumes:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
-
     networks:
       - sonarnet
 
@@ -77,11 +69,11 @@ services:
       - sonarnet
     entrypoint: ["/bin/sh", "-c"]
     command: >
-      "while true; do
-         echo 'Cleaning SonarQube logs older than 14 days...';
-         find /logs -type f -mtime +14 -exec rm -f {} \;;
-         sleep 86400;
-       done"
+      while true; do
+        echo "Cleaning SonarQube logs older than 14 days...";
+        find /logs -type f -mtime +14 -exec rm -f {} \;;
+        sleep 86400;
+      done
 
 volumes:
   sonarqube_postgres_data:
@@ -96,6 +88,7 @@ volumes:
 networks:
   sonarnet:
     driver: bridge
+
 ```
 - start the containers
 ```
