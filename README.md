@@ -60,7 +60,7 @@ services:
     networks:
       - sonarnet
 
-  log_cleaner:
+log_cleaner:
     image: alpine
     container_name: sonarqube_log_cleaner
     volumes:
