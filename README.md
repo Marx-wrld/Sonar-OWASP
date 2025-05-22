@@ -19,27 +19,83 @@ version: '3.8'
 services:
   sonarqube_postgres:
     image: postgres:12
+    container_name: sonarqube_postgres
     environment:
       POSTGRES_USER: sonaruser
       POSTGRES_PASSWORD: velocityadmin
       POSTGRES_DB: sonarqube
     ports:
-      - "5433:5432"  # Use a different host port, e.g., 5433
+      - "5433:5432"  # Host port:Container port
     volumes:
       - sonarqube_postgres_data:/var/lib/postgresql/data
+    networks:
+      - sonarnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sonaruser -d sonarqube"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   sonarqube:
     image: sonarqube:latest
+    container_name: sonarqube
+    depends_on:
+      - sonarqube_postgres
     ports:
       - "9000:9000"
     environment:
-      - SONAR_JDBC_URL=jdbc:postgresql://sonarqube_postgres:5432/sonarqube
-      - SONAR_JDBC_USERNAME=sonaruser
-      - SONAR_JDBC_PASSWORD=velocityadmin
-    depends_on:
-      - sonarqube_postgres
+      # Database Configuration
+      SONAR_JDBC_URL: jdbc:postgresql://sonarqube_postgres:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonaruser
+      SONAR_JDBC_PASSWORD: velocityadmin
+
+      # Elasticsearch Memory Configuration
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+
+      # SonarQube Memory Configuration
+      SONARQUBE_JAVA_OPTS: "-Xms1g -Xmx2g"
+
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+    networks:
+      - sonarnet
+
+  log_cleaner:
+    image: alpine
+    container_name: sonarqube_log_cleaner
+    volumes:
+      - sonarqube_logs:/logs
+    networks:
+      - sonarnet
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "while true; do
+         echo 'Cleaning SonarQube logs older than 14 days...';
+         find /logs -type f -mtime +14 -exec rm -f {} \;;
+         sleep 86400;
+       done"
+
 volumes:
   sonarqube_postgres_data:
+    driver: local
+  sonarqube_data:
+    driver: local
+  sonarqube_extensions:
+    driver: local
+  sonarqube_logs:
+    driver: local
+
+networks:
+  sonarnet:
+    driver: bridge
 ```
 - start the containers
 ```
