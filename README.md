@@ -65,15 +65,10 @@ log_cleaner:
     container_name: sonarqube_log_cleaner
     volumes:
       - sonarqube_logs:/logs
+      - ./clean-logs.sh:/clean-logs.sh  # Mount the script
     networks:
       - sonarnet
-    entrypoint: ["/bin/sh", "-c"]
-    command: >
-      while true; do
-        echo "Cleaning SonarQube logs older than 14 days...";
-        find /logs -type f -mtime +14 -exec rm -f {} \;;
-        sleep 86400;
-      done
+    entrypoint: ["/bin/sh", "/clean-logs.sh"]
 
 volumes:
   sonarqube_postgres_data:
@@ -131,3 +126,18 @@ Step 4. Access SonarQube
 
 Step 5. Trigger a CI/CD Build
 - Push changes to your GitHub repository. This should trigger the GitHub Actions workflow and perform a SonarQube analysis.
+
+```
+clean-logs.sh
+```
+#!/bin/sh
+
+while true; do
+  echo "Cleaning SonarQube logs older than 14 days..."
+  find /logs -type f -mtime +14 -exec rm -f {} \;
+  sleep 86400
+done
+```
+Make executable - chmod +x clean-logs.sh
+```
+
