@@ -128,8 +128,8 @@ Step 5. Trigger a CI/CD Build
 - Push changes to your GitHub repository. This should trigger the GitHub Actions workflow and perform a SonarQube analysis.
 
 ```
-clean-logs.sh
-```
+#clean-logs.sh
+
 #!/bin/sh
 
 while true; do
